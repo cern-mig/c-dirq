@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+#+##############################################################################
+#                                                                              #
+# File: pp                                                                     #
+#                                                                              #
+# Description: prepare (i.e. assemble) the POD documentation                   #
+#                                                                              #
+#-##############################################################################
+
+# $Id: pp,v 1.2 2013/06/14 08:56:50 c0ns Exp $
+
+use strict;
+use warnings;
+use No::Worries::File qw(file_read);
+
+sub prepare ($$) {
+    my($pod, $hdr) = @_;
+    my($syn);
+
+    foreach my $pline (split(/\n/, file_read($pod))) {
+        if ($pline eq "<{SYNOPSIS}>") {
+            $syn = 0;
+            foreach my $hline (split(/\n/, file_read($hdr))) {
+                if ($syn) {
+                    if ($hline =~ /END SYNOPSIS/) {
+                        $syn = 0;
+                    } elsif ($hline) {
+                        printf("  %s\n", $hline);
+                    } else {
+                        print("\n");
+                    }
+                } else {
+                    if ($hline =~ /BEGIN SYNOPSIS/) {
+                        $syn = 1;
+                    }
+                }
+            }
+        } else {
+            printf("%s\n", $pline);
+        }
+    }
+}
+
+die("Usage: pp file.p0d file.h\n")
+    unless @ARGV == 2 and -f $ARGV[0] and -f $ARGV[1];
+prepare($ARGV[0], $ARGV[1]);

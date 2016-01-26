@@ -1,0 +1,63 @@
+#+##############################################################################
+#                                                                              #
+# File: Makefile.in                                                            #
+#                                                                              #
+# Description: skeleton Makefile for the source code                           #
+#                                                                              #
+#-##############################################################################
+
+# $Id: Makefile.in,v 1.13 2016/01/13 10:07:24 c0ns Exp $
+
+CC=gcc
+CFLAGS=@CFLAGS@
+XDEPS=$(wildcard dirq_*.[ch])
+LIBS=@LIBS@
+INCLUDEDIR=@INCLUDEDIR@
+LIBDIR=@LIBDIR@
+MANDIR=@MANDIR@
+INSTALLROOT=
+VERSION=@VERSION@
+MAJOR=$(firstword $(subst ., ,$(VERSION)))
+SYSTEM=@SYSTEM@
+
+.PHONY: all test install clean distclean
+
+all: libdirq.a libdirq.so dqt
+
+dirq.o: dirq.c dirq.h $(XDEPS)
+dqt.o: dqt.c dirq.h
+
+libdirq.a: dirq.o
+	ar rcs $@ $^
+
+libdirq.so: dirq.o
+ifeq ($(SYSTEM),Linux)
+	$(CC) -shared -Wl,-soname,$@.$(MAJOR) -o $@ $^
+else
+	$(CC) -shared -o $@ $^
+endif
+
+dqt: dqt.o libdirq.a
+	$(CC) -o $@ $^ $(LIBS)
+
+test: dqt
+	@tempdir=`mktemp -d -t c-dirq-XXXXX`; \
+	./dqt -d --count 1000 --path $$tempdir/new simple; \
+	rmdir $$tempdir
+
+install: libdirq.a libdirq.so
+	install -d $(INSTALLROOT)$(INCLUDEDIR)
+	install -m 0644 dirq.h $(INSTALLROOT)$(INCLUDEDIR)
+	install -d $(INSTALLROOT)$(LIBDIR)
+	install -m 0644 libdirq.a $(INSTALLROOT)$(LIBDIR)
+	install -m 0755 libdirq.so $(INSTALLROOT)$(LIBDIR)/libdirq.so.$(VERSION)
+	ln -s libdirq.so.$(VERSION) $(INSTALLROOT)$(LIBDIR)/libdirq.so.$(MAJOR)
+	ln -s libdirq.so.$(MAJOR) $(INSTALLROOT)$(LIBDIR)/libdirq.so
+	install -d $(INSTALLROOT)$(MANDIR)/man3
+	install -m 0644 ../doc/dirq.3 $(INSTALLROOT)$(MANDIR)/man3
+
+clean:
+	rm -f dqt libdirq.a libdirq.so *.o *~
+
+distclean: clean
+	rm -f Makefile

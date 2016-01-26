@@ -1,0 +1,52 @@
+# $Id: DESIGN,v 1.3 2016/01/13 06:07:28 c0ns Exp $
+
+Design
+======
+
+The Directory Queue "object" (dirq_t) is opaque and _not_ considered to be
+thread safe: different threads must use different objects.
+
+To improve memory management, a single memory chunk is allocated (and will
+grow as needed). It is used for:
+ - the path of the directory queue (path)
+ - temporary buffers for path building (tmp1 & tmp2)
+ - temporary buffer for iteration (dirs & elts)
+ - temporary buffer for error message (dirs too!)
+
+Error Handling
+==============
+
+The functions should never "die" as this cannot be caught by the caller
+(unlike in Perl). So all functions that can fail must have a way to return
+an error, usually with unexpected return value such as NULL or <0. The main
+exception is memory allocation: since the situation is probably desperate if
+memory cannot be allocated, a fatal error is the only reasonable response.
+As this is low level too, clock related errors will be considered as fatal.
+
+It is difficult to predict how long an error message will be. It is a waste
+of space to allocate a big buffer for it in advance and not use it. As a
+compromise, we will use the iteration buffer to store the error message with
+the consequence that an error will reset the iterator.
+
+Iteration
+=========
+
+In order to provide an iterator, we need:
+ - a list of intermediate directories
+ - the index of the current intermediate directory
+ - a list of element names in the current intermediate directory
+ - the index of the current element
+
+Each intermediate directory is 8 bytes long, each element 14 (padded to 16).
+
+Public API
+==========
+
+See dirq.h. It is the only header file installed.
+
+Private API
+===========
+
+Code is split into separate files for maintenance purposes. dirq.c
+includes all the fragments: dirq_*.h (private includes) and dirq_*.c
+(code fragments).

@@ -1,0 +1,13 @@
+Revision history for C dirq:
+
+???	???
+	* Fixed incorrect memory handling resulting in segfaults.
+
+0.2	Wed Jan 13 2016
+	* Added dirq_copy(), dirq_get_size() and dirq_touch().
+	* Improved the randomness of the default rndhex.
+	* Added a --random option to dqt.
+	* Added shared library support.
+
+0.1	Fri Jun 14 2013
+	* First packaged version.

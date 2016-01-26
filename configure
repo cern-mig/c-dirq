@@ -1,0 +1,104 @@
+#!/bin/sh
+#+##############################################################################
+#                                                                              #
+# File: configure                                                              #
+#                                                                              #
+# Description: simple minded configure script                                  #
+#                                                                              #
+#-##############################################################################
+
+# $Id: configure,v 1.5 2016/01/13 08:42:06 c0ns Exp $
+
+#
+# defaults
+#
+
+debug=0
+includedir="/usr/include"
+libdir="/usr/lib"
+mandir="/usr/share/man"
+
+version=`cat VERSION`
+system=`uname -s`
+cflags="-pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align\
+ -Wmissing-prototypes -Wmissing-declarations -fpic"
+libs=
+
+#
+# functions
+#
+
+function _die() {
+    echo "*** $1" >&2
+    exit 1
+}
+
+function _setopt() {
+    eval "$1=$2"
+}
+
+function _chkopt() {
+    [ "x$2" = "xUNSET" ] && _die "option --$1 requires an argument"
+    _setopt $1 $2
+}
+
+function _help() {
+    cat <<EOF
+$0 [OPTIONS]
+  -d|--debug           enable code debugging [$debug]
+  -h|--help            display this help and exit
+  --includedir=PATH    C header files [$includedir]
+  --libdir=PATH        object code libraries [$libdir]
+  --mandir=PATH        man documentation [$mandir]
+EOF
+    exit 0
+}
+
+#
+# options parsing
+#
+
+while [ $# -gt 0 ]; do
+    opt=$1
+    shift
+    case $opt in
+	-d|--debug)     _setopt debug 1;;
+	-h|--help)      _help;;
+	--includedir)   _chkopt includedir ${1-UNSET}; shift;;
+	--includedir=*) _setopt includedir `echo $opt | sed 's/[-a-z]*=//'`;;
+	--libdir)       _chkopt libdir ${1-UNSET}; shift;;
+	--libdir=*)     _setopt libdir `echo $opt | sed 's/[-a-z]*=//'`;;
+	--mandir)       _chkopt mandir ${1-UNSET}; shift;;
+	--mandir=*)     _setopt mandir `echo $opt | sed 's/[-a-z]*=//'`;;
+	*)              _die "unsupported option: $opt";;
+    esac
+done
+
+#
+# configuration logic
+#
+
+[ "x$system" = "xLinux" ] && libs="-lrt"
+if [ $debug -eq 0 ]; then
+    cflags="-O -DNDEBUG $cflags"
+else
+    cflags="-g $cflags"
+fi
+
+#
+# substitutions
+#
+
+subst=
+for name in cflags debug includedir libdir libs mandir system version; do
+    eval "value=\$$name"
+    echo "using $name=$value"
+    key=`echo $name | tr '[a-z]' '[A-Z]'`
+    subst="$subst -e 's|@$key@|$value|g'"
+done
+
+for path in src/Makefile; do
+    echo "creating $path"
+    rm -f $path
+    eval sed $subst <$path.in >$path
+done
