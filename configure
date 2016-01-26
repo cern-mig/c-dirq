@@ -29,21 +29,21 @@ libs=
 # functions
 #
 
-function _die() {
+_die() {
     echo "*** $1" >&2
     exit 1
 }
 
-function _setopt() {
+_setopt() {
     eval "$1=$2"
 }
 
-function _chkopt() {
+_chkopt() {
     [ "x$2" = "xUNSET" ] && _die "option --$1 requires an argument"
     _setopt $1 $2
 }
 
-function _help() {
+_help() {
     cat <<EOF
 $0 [OPTIONS]
   -d|--debug           enable code debugging [$debug]
