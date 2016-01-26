@@ -24,6 +24,7 @@ system=`uname -s`
 cflags="-pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align\
  -Wmissing-prototypes -Wmissing-declarations -fpic"
 libs=
+cc=${CC-gcc}
 
 #
 # functions
@@ -91,7 +92,7 @@ fi
 #
 
 subst=
-for name in cflags debug includedir libdir libs mandir system version; do
+for name in cc cflags debug includedir libdir libs mandir system version; do
     eval "value=\$$name"
     echo "using $name=$value"
     key=`echo $name | tr '[a-z]' '[A-Z]'`
