@@ -5,7 +5,8 @@
 **-****************************************************************************/
 
 /*
- * $Id: dirq_clock.c,v 1.4 2013/07/03 12:24:03 c0ns Exp $
+ * Author: Lionel Cons (http://cern.ch/lionel.cons)
+ * Copyright (C) CERN 2012-2016
  */
 
 /*

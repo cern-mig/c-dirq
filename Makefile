@@ -6,7 +6,8 @@
 #                                                                              #
 #-##############################################################################
 
-# $Id: Makefile,v 1.6 2016/01/13 09:37:10 c0ns Exp $
+# Author: Lionel Cons (http://cern.ch/lionel.cons)
+# Copyright (C) CERN 2012-2016
 
 VERSION=$(shell cat VERSION)
 PKGDIR=libdirq-$(VERSION)

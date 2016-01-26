@@ -6,7 +6,8 @@
 #                                                                              #
 #-##############################################################################
 
-# $Id: Makefile,v 1.4 2013/06/14 09:06:08 c0ns Exp $
+# Author: Lionel Cons (http://cern.ch/lionel.cons)
+# Copyright (C) CERN 2012-2016
 
 DIRQH=../src/dirq.h
 FILES=dirq.pod dirq.html dirq.3

@@ -1,5 +1,3 @@
-# $Id: TODO,v 1.7 2016/01/14 08:47:16 c0ns Exp $
-
 ToDo
  - implement umask (or remove it from all implementations!)
  - better document the reading and writing via callbacks

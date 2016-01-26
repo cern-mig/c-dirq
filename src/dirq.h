@@ -5,7 +5,8 @@
 **-****************************************************************************/
 
 /*
- * $Id: dirq.h,v 1.23 2013/07/04 12:21:30 c0ns Exp $
+ * Author: Lionel Cons (http://cern.ch/lionel.cons)
+ * Copyright (C) CERN 2012-2016
  */
 
 #ifndef _DIRQ_H
