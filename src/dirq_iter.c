@@ -19,8 +19,9 @@ typedef int (*iter_cb)(dirq_t, const char *, int);
  * constants
  */
 
-#define DIRS_SIZE  8
-#define ELTS_SIZE 16
+#define DIRS_SIZE      8
+#define ELTS_SIZE     16
+#define SUFFIX_LENGTH  4
 
 /*
  * macros
@@ -119,7 +120,7 @@ static int _get_dirs_cb (dirq_t dirq, const char *name, int len)
 {
   if (dirq->dirs_offset + (dirq->dirs_count + 1) * DIRS_SIZE >= dirq->allocated)
     allocate_more(dirq);
-  if (len == DIRS_SIZE && _ishexstr(name, len)) {
+  if (len == DIR_NAME_LENGTH && _ishexstr(name, len)) {
     strncpy(DIRBUF(dirq,dirq->dirs_count), name, len);
     dirq->dirs_count++;
   }
@@ -259,7 +260,7 @@ static int _purge_cb (dirq_t dirq, const char *name, int len)
   struct stat sb;
 
   if ((dirq->purge_maxlock != 0 || dirq->purge_maxtemp != 0) &&
-      len > 4 && name[len - 4] == '.') {
+      len >= SUFFIX_LENGTH && name[len - SUFFIX_LENGTH] == '.') {
     /* dot file to maybe remove... */
     strncpy(TMP2NAME(dirq) + DIRS_SIZE + 1, name, len);
     *(TMP2NAME(dirq) + DIRS_SIZE + 1 + len) = '\0';
@@ -270,7 +271,7 @@ static int _purge_cb (dirq_t dirq, const char *name, int len)
       return(-1);
     }
     if (dirq->purge_maxlock != 0 &&
-        strcmp(&name[len - 4], LOCKED_SUFFIX) == 0 &&
+        strcmp(&name[len - SUFFIX_LENGTH], LOCKED_SUFFIX) == 0 &&
         sb.st_mtime < dirq->purge_maxlock) {
       if (unlink(TMP2BUF(dirq)) != 0) {
         if (errno == ENOENT)
@@ -281,7 +282,7 @@ static int _purge_cb (dirq_t dirq, const char *name, int len)
       return(1);
     }
     if (dirq->purge_maxtemp != 0 &&
-        strcmp(&name[len - 4], TEMPORARY_SUFFIX) == 0 &&
+        strcmp(&name[len - SUFFIX_LENGTH], TEMPORARY_SUFFIX) == 0 &&
         sb.st_mtime < dirq->purge_maxtemp) {
       if (unlink(TMP2BUF(dirq)) != 0) {
         if (errno == ENOENT)
