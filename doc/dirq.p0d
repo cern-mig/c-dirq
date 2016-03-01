@@ -17,6 +17,8 @@ be written in different programming languages:
 
 =over
 
+=item C: L<https://github.com/cern-mig/c-dirq>
+
 =item Java: L<https://github.com/cern-mig/java-dirq>
 
 =item Perl: L<http://search.cpan.org/dist/Directory-Queue/>
