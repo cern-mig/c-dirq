@@ -1,0 +1,320 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<h1 id="NAME">NAME</h1>
+
+<p>dirq - C implementation of the simple directory queue algorithm</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>  /*
+   * types
+   */
+
+  typedef struct dirq_s *dirq_t;
+  typedef int (*dirq_iow)(dirq_t, char *, size_t);
+  typedef int (*dirq_ior)(dirq_t, const char *, size_t);
+
+  /*
+   * constructors &amp; destructor
+   */
+
+  dirq_t dirq_new  (const char *path);
+  dirq_t dirq_copy (dirq_t dirq);
+  void   dirq_free (dirq_t dirq);
+
+  /*
+   * accessors
+   */
+
+  void   dirq_set_granularity (dirq_t dirq, int value);
+  int    dirq_get_granularity (dirq_t dirq);
+  void   dirq_set_rndhex      (dirq_t dirq, int value);
+  int    dirq_get_rndhex      (dirq_t dirq);
+  void   dirq_set_umask       (dirq_t dirq, mode_t value);
+  mode_t dirq_get_umask       (dirq_t dirq);
+  void   dirq_set_maxlock     (dirq_t dirq, int value);
+  int    dirq_get_maxlock     (dirq_t dirq);
+  void   dirq_set_maxtemp     (dirq_t dirq, int value);
+  int    dirq_get_maxtemp     (dirq_t dirq);
+
+  /*
+   * iterators
+   */
+
+  const char *dirq_first (dirq_t dirq);
+  const char *dirq_next  (dirq_t dirq);
+
+  /*
+   * main methods
+   */
+
+  const char *dirq_add      (dirq_t dirq, dirq_iow cb);
+  const char *dirq_add_path (dirq_t dirq, const char *path);
+  int         dirq_get      (dirq_t dirq, const char *name, dirq_ior cb);
+  const char *dirq_get_path (dirq_t dirq, const char *name);
+  int         dirq_lock     (dirq_t dirq, const char *name, int permissive);
+  int         dirq_unlock   (dirq_t dirq, const char *name, int permissive);
+  int         dirq_remove   (dirq_t dirq, const char *name);
+  int         dirq_touch    (dirq_t dirq, const char *name);
+  int         dirq_get_size (dirq_t dirq, const char *name);
+  int         dirq_count    (dirq_t dirq);
+  int         dirq_purge    (dirq_t dirq);
+
+  /*
+   * other methods
+   */
+
+  void        dirq_now         (dirq_t dirq, struct timespec *ts);
+  int         dirq_get_errcode (dirq_t dirq);
+  const char *dirq_get_errstr  (dirq_t dirq);
+  void        dirq_clear_error (dirq_t dirq);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The goal of this library is to offer a &quot;simple&quot; queue system using the underlying filesystem for storage, security and to prevent race conditions via atomic operations. It focuses on simplicity, robustness and scalability.</p>
+
+<p>Multiple concurrent readers and writers can interact with the same queue.</p>
+
+<p>Other implementations of the same algorithm exist so readers and writers can be written in different programming languages:</p>
+
+<dl>
+
+<dt id="Java:-https:-github.com-cern-mig-java-dirq">Java: <a href="https://github.com/cern-mig/java-dirq">https://github.com/cern-mig/java-dirq</a></dt>
+<dd>
+
+</dd>
+<dt id="Perl:-http:-search.cpan.org-dist-Directory-Queue">Perl: <a href="http://search.cpan.org/dist/Directory-Queue/">http://search.cpan.org/dist/Directory-Queue/</a></dt>
+<dd>
+
+</dd>
+<dt id="Python:-https:-github.com-cern-mig-python-dirq">Python: <a href="https://github.com/cern-mig/python-dirq">https://github.com/cern-mig/python-dirq</a></dt>
+<dd>
+
+</dd>
+</dl>
+
+<p>The Perl implementation is the reference one and contains extensive documentation.</p>
+
+<h1 id="OVERVIEW">OVERVIEW</h1>
+
+<p>The object oriented API to access the directory queue is implemented with an opaque data type (<code>dirq_t</code>), a constructor (<code>dirq_new</code>) and methods which are C functions requiring the &quot;object&quot; as their first argument. The destructor (<code>dirq_free</code>) must be called when the object is not needed anymore.</p>
+
+<p>The directory queue object is not considered to be thread safe: different threads must use different objects.</p>
+
+<p>All the functions that return a string (i.e. <code>const char *</code>) in fact return a pointer to statically allocated data inside the directory queue object. The caller must use or copy the string before calling other functions since they may override this statically allocated data.</p>
+
+<p>Adding and getting elements (i.e. sequences of bytes) is achieved via callback functions working on chunks of bytes so it is never needed to allocate memory holding complete elements.</p>
+
+<p>In case of error, the <code>dirq_get_errcode</code> and <code>dirq_get_errstr</code> functions can be used to get more information. The safest approach is then to stop using the object and free it. However, if needed, the error information can be cleared with <code>dirq_clear_error</code>.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<dl>
+
+<dt id="dirq_t-dirq_new-const-char-path">dirq_t dirq_new (const char *path)</dt>
+<dd>
+
+<p>creates a new directory queue object using the given path, setting the internal error information (see <code>dirq_get_errcode</code> or <code>dirq_get_errstr</code>) in case of error</p>
+
+</dd>
+<dt id="dirq_t-dirq_copy-dirq_t-dirq">dirq_t dirq_copy (dirq_t dirq)</dt>
+<dd>
+
+<p>creates a new directory queue object which is a copy of the given one</p>
+
+</dd>
+<dt id="void-dirq_free-dirq_t-dirq">void dirq_free (dirq_t dirq)</dt>
+<dd>
+
+<p>frees the memory associated with the directory queue object</p>
+
+</dd>
+<dt id="void-dirq_set_granularity-dirq_t-dirq-int-value">void dirq_set_granularity (dirq_t dirq, int value)</dt>
+<dd>
+
+<p>sets the time granularity for intermediate directories (default: 60)</p>
+
+</dd>
+<dt id="int-dirq_get_granularity-dirq_t-dirq">int dirq_get_granularity (dirq_t dirq)</dt>
+<dd>
+
+<p>gets the time granularity for intermediate directories</p>
+
+</dd>
+<dt id="void-dirq_set_rndhex-dirq_t-dirq-int-value">void dirq_set_rndhex (dirq_t dirq, int value)</dt>
+<dd>
+
+<p>sets the random hexadecimal digit to use in element names (default: randomly generated)</p>
+
+</dd>
+<dt id="int-dirq_get_rndhex-dirq_t-dirq">int dirq_get_rndhex (dirq_t dirq)</dt>
+<dd>
+
+<p>gets the random hexadecimal digit to use in element names</p>
+
+</dd>
+<dt id="void-dirq_set_umask-dirq_t-dirq-mode_t-value">void dirq_set_umask (dirq_t dirq, mode_t value)</dt>
+<dd>
+
+<p>sets the umask to use when creating files and directories (default: use the running process&#39; umask)</p>
+
+</dd>
+<dt id="mode_t-dirq_get_umask-dirq_t-dirq">mode_t dirq_get_umask (dirq_t dirq)</dt>
+<dd>
+
+<p>gets the umask to use when creating files and directories</p>
+
+</dd>
+<dt id="void-dirq_set_maxlock-dirq_t-dirq-int-value">void dirq_set_maxlock (dirq_t dirq, int value)</dt>
+<dd>
+
+<p>sets the maximum time for a locked element in seconds (default 600)</p>
+
+</dd>
+<dt id="int-dirq_get_maxlock-dirq_t-dirq">int dirq_get_maxlock (dirq_t dirq)</dt>
+<dd>
+
+<p>gets the maximum time for a locked element in seconds</p>
+
+</dd>
+<dt id="void-dirq_set_maxtemp-dirq_t-dirq-int-value">void dirq_set_maxtemp (dirq_t dirq, int value)</dt>
+<dd>
+
+<p>sets the maximum time for a temporary element in seconds (default 300)</p>
+
+</dd>
+<dt id="int-dirq_get_maxtemp-dirq_t-dirq">int dirq_get_maxtemp (dirq_t dirq)</dt>
+<dd>
+
+<p>gets the maximum time for a temporary element in seconds</p>
+
+</dd>
+<dt id="const-char-dirq_first-dirq_t-dirq">const char *dirq_first (dirq_t dirq)</dt>
+<dd>
+
+<p>returns the first element in the queue, resetting the iterator; returns NULL if the queue is empty or an error occurred</p>
+
+</dd>
+<dt id="const-char-dirq_next-dirq_t-dirq">const char *dirq_next (dirq_t dirq)</dt>
+<dd>
+
+<p>returns the next element in the queue, incrementing the iterator; returns NULL if there is no next element or an error occurred</p>
+
+</dd>
+<dt id="const-char-dirq_add-dirq_t-dirq-dirq_iow-cb">const char *dirq_add (dirq_t dirq, dirq_iow cb)</dt>
+<dd>
+
+<p>adds the given data (via callback) to the queue and returns the corresponding element name or NULL on error</p>
+
+</dd>
+<dt id="const-char-dirq_add_path-dirq_t-dirq-const-char-path">const char *dirq_add_path (dirq_t dirq, const char *path)</dt>
+<dd>
+
+<p>adds the given file (identified by its path) to the queue and returns the corresponding element name or NULL on error, the file must be on the same filesystem and will be moved to the queue</p>
+
+</dd>
+<dt id="int-dirq_get-dirq_t-dirq-const-char-name-dirq_ior-cb">int dirq_get (dirq_t dirq, const char *name, dirq_ior cb)</dt>
+<dd>
+
+<p>gets the data from the given element (which must be locked) via callback; returns 0 on success, -1 on error</p>
+
+</dd>
+<dt id="const-char-dirq_get_path-dirq_t-dirq-const-char-name">const char *dirq_get_path (dirq_t dirq, const char *name)</dt>
+<dd>
+
+<p>gets the file path of the given element (which must be locked), this file can be read but not removed, you must use the remove() method for this; if the given name is NULL, returns the directory queue path itself</p>
+
+</dd>
+<dt id="int-dirq_lock-dirq_t-dirq-const-char-name-int-permissive">int dirq_lock (dirq_t dirq, const char *name, int permissive)</dt>
+<dd>
+
+<p>attempts to lock the given element and returns 0 on success; in case of error, returns 1 (permissive) or -1 (non permissive)</p>
+
+</dd>
+<dt id="int-dirq_unlock-dirq_t-dirq-const-char-name-int-permissive">int dirq_unlock (dirq_t dirq, const char *name, int permissive)</dt>
+<dd>
+
+<p>attempts to unlock the given element and returns 0 on success; in case of error, returns 1 (permissive) or -1 (non permissive)</p>
+
+</dd>
+<dt id="int-dirq_remove-dirq_t-dirq-const-char-name">int dirq_remove (dirq_t dirq, const char *name)</dt>
+<dd>
+
+<p>removes the given element (which must be locked) from the queue; returns 0 on success, -1 on error</p>
+
+</dd>
+<dt id="int-dirq_touch-dirq_t-dirq-const-char-name">int dirq_touch (dirq_t dirq, const char *name)</dt>
+<dd>
+
+<p>&quot;touches&quot; the given element (i.e. updates the access and modification times to the current time); returns 0 on success, -1 on error</p>
+
+</dd>
+<dt id="int-dirq_get_size-dirq_t-dirq-const-char-name">int dirq_get_size (dirq_t dirq, const char *name)</dt>
+<dd>
+
+<p>returns the size (in bytes) of the given element or -1 on error</p>
+
+</dd>
+<dt id="int-dirq_count-dirq_t-dirq">int dirq_count (dirq_t dirq)</dt>
+<dd>
+
+<p>returns the number of elements in the queue or -1 on error; this also resets the iterator</p>
+
+</dd>
+<dt id="int-dirq_purge-dirq_t-dirq">int dirq_purge (dirq_t dirq)</dt>
+<dd>
+
+<p>purges the queue by removing unused intermediate directories, removing too old temporary elements and unlocking too old locked elements (aka staled locks); this is using the <code>maxlock</code> and <code>maxtemp</code> attributes of the directory queue object; returns the number of elements purged or -1 on error; this also resets the iterator</p>
+
+</dd>
+<dt id="void-dirq_now-dirq_t-dirq-struct-timespec-ts">void dirq_now (dirq_t dirq, struct timespec *ts)</dt>
+<dd>
+
+<p>returns the current time in the given <code>timespec</code> structure</p>
+
+</dd>
+<dt id="int-dirq_get_errcode-dirq_t-dirq">int dirq_get_errcode (dirq_t dirq)</dt>
+<dd>
+
+<p>returns the current error code (usually <code>errno</code>) or 0 if there is no error</p>
+
+</dd>
+<dt id="const-char-dirq_get_errstr-dirq_t-dirq">const char *dirq_get_errstr (dirq_t dirq)</dt>
+<dd>
+
+<p>returns the current error string or NULL if there is no error</p>
+
+</dd>
+<dt id="void-dirq_clear_error-dirq_t-dirq">void dirq_clear_error (dirq_t dirq)</dt>
+<dd>
+
+<p>clears the current error</p>
+
+</dd>
+</dl>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Lionel Cons <a href="http://cern.ch/lionel.cons">http://cern.ch/lionel.cons</a></p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright (C) CERN 2012-2016</p>
+
+
+</body>
+
+</html>
+
+
