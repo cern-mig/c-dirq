@@ -92,7 +92,8 @@ static void set_new_name (dirq_t dirq, int offset)
   struct timespec ts;
 
   dirq_now(dirq, &ts);
-  sprintf(dirq->buffer + offset + dirq->pathlen + 10, "%08x%05x%01x",
+  sprintf(dirq->buffer + offset + dirq->pathlen + 1 + DIR_NAME_LENGTH + 1,
+          "%08x%05x%01x",
           (uint32_t)ts.tv_sec,
           (uint32_t)(ts.tv_nsec / 1000),
           (uint32_t)dirq->rndhex);
