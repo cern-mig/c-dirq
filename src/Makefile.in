@@ -33,7 +33,7 @@ libdirq.a: dirq.o
 
 libdirq.so: dirq.o
 ifeq ($(SYSTEM),Linux)
-	$(CC) -shared -Wl,-soname,$@.$(MAJOR) -o $@ $^
+	$(CC) -shared -Wl,-soname,$@.$(MAJOR) -lrt -o $@ $^
 else
 	$(CC) -shared -o $@ $^
 endif
