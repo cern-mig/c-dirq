@@ -23,7 +23,7 @@ SYSTEM=@SYSTEM@
 
 .PHONY: all test install clean distclean
 
-all: libdirq.a libdirq.so dqt
+all: libdirq.a libdirq.so dqt libdirq.pc
 
 dirq.o: dirq.c dirq.h $(XDEPS)
 dqt.o: dqt.c dirq.h
@@ -33,7 +33,7 @@ libdirq.a: dirq.o
 
 libdirq.so: dirq.o
 ifeq ($(SYSTEM),Linux)
-	$(CC) -shared -Wl,-soname,$@.$(MAJOR) -o $@ $^
+	$(CC) -shared -Wl,-soname,$@.$(MAJOR) -lrt -o $@ $^
 else
 	$(CC) -shared -o $@ $^
 endif
@@ -41,12 +41,19 @@ endif
 dqt: dqt.o libdirq.a
 	$(CC) -o $@ $^ $(LIBS)
 
+libdirq.pc: libdirq.pc.template
+	cp -f $^ $@
+	sed -i "s;prefix=;prefix=$(INSTALLROOT);g" $@
+	sed -i "s;libdir=;libdir=$(INSTALROOT)$(LIBDIR);g" $@
+	sed -i "s;includedir=;includedir=$(INSTALROOT)$(INCLUDEDIR);g" $@
+	sed -i "s;Version:;Version: $(VERSION);g" $@
+
 test: dqt
 	@tempdir=`mktemp -d -t c-dirq-XXXXX`; \
 	./dqt -d --count 1000 --path $$tempdir/new simple; \
 	rmdir $$tempdir
 
-install: libdirq.a libdirq.so
+install: libdirq.a libdirq.so libdirq.pc
 	install -d $(INSTALLROOT)$(INCLUDEDIR)
 	install -m 0644 dirq.h $(INSTALLROOT)$(INCLUDEDIR)
 	install -d $(INSTALLROOT)$(LIBDIR)
@@ -56,6 +63,8 @@ install: libdirq.a libdirq.so
 	ln -s libdirq.so.$(MAJOR) $(INSTALLROOT)$(LIBDIR)/libdirq.so
 	install -d $(INSTALLROOT)$(MANDIR)/man3
 	install -m 0644 ../doc/dirq.3 $(INSTALLROOT)$(MANDIR)/man3
+	install -d $(INSTALLROOT)$(LIBDIR)/pkgconfig
+	install -m 0644 libdirq.pc $(INSTALLROOT)$(LIBDIR)/pkgconfig
 
 clean:
 	rm -f dqt libdirq.a libdirq.so *.o *~

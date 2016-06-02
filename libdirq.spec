@@ -60,4 +60,5 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_libdir}/*.a
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
 %{_mandir}/*/*
