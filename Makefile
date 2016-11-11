@@ -31,7 +31,7 @@ $(TARBALL):
 	@tempdir=`mktemp -d -t c-dirq-XXXXX`; \
 	mkdir $$tempdir/$(PKGDIR); \
 	cp -a $(PKGFILES) $$tempdir/$(PKGDIR); \
-	( cd $$tempdir; tar cvfz $(TARBALL) --exclude "RCS" $(PKGDIR) ); \
+	( cd $$tempdir; tar cvfz $(TARBALL) $(PKGDIR) ); \
 	mv -f $$tempdir/$(TARBALL) $(TARBALL); \
 	rm -fr $$tempdir
 
