@@ -75,4 +75,5 @@ rm -rf %{buildroot}
 %{_mandir}/*/*
 
 %files static
+%defattr(-,root,root,-)
 %{_libdir}/*.a
