@@ -11,7 +11,7 @@
 
 VERSION=$(shell cat VERSION)
 PKGDIR=libdirq-$(VERSION)
-TARBALL=$(PKGDIR).tgz
+TARBALL=$(PKGDIR).tar.gz
 PKGFILES=CHANGES DESIGN LICENSE README VERSION \
  Makefile configure doc src libdirq.spec
 
