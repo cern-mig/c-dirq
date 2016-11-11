@@ -1,4 +1,5 @@
-%define github_name cern-mig/c-dirq
+%define github_owner cern-mig
+%define github_name  c-dirq
 %define real_version %((cat %{_sourcedir}/VERSION || \
                         cat  %{_builddir}/VERSION || \
                         echo UNKNOWN) 2>/dev/null)
@@ -8,9 +9,9 @@ Name:		libdirq
 Version:	%{real_version}
 Release:	1%{?dist}
 License:	ASL 2.0
-URL:		https://github.com/%{github_name}/
+URL:		https://github.com/%{github_owner}/%{github_name}/
 Group:		System Environment/Libraries
-Source0:	https://github.com/%{github_name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}.tar.gz
 Source1:	VERSION
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 
