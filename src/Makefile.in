@@ -67,7 +67,7 @@ install: libdirq.a libdirq.so libdirq.pc
 	install -m 0644 libdirq.pc $(INSTALLROOT)$(LIBDIR)/pkgconfig
 
 clean:
-	rm -f dqt libdirq.a libdirq.so *.o *~
+	rm -f libdirq.a libdirq.so dqt libdirq.pc *.o *~
 
 distclean: clean
 	rm -f Makefile
