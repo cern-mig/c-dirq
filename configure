@@ -22,7 +22,7 @@ mandir="/usr/share/man"
 version=`cat VERSION`
 system=`uname -s`
 cflags="-pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align\
- -Wmissing-prototypes -Wmissing-declarations -fpic"
+ -Wmissing-prototypes -Wmissing-declarations -fpic ${CFLAGS}"
 libs=
 cc=${CC-gcc}
 
