@@ -99,7 +99,7 @@ for name in cc cflags debug includedir libdir libs mandir system version; do
     subst="$subst -e 's|@$key@|$value|g'"
 done
 
-for path in src/Makefile; do
+for path in src/Makefile src/libdirq.pc; do
     echo "creating $path"
     rm -f $path
     eval sed $subst <$path.in >$path

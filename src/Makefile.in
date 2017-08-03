@@ -23,7 +23,7 @@ SYSTEM=@SYSTEM@
 
 .PHONY: all test install clean distclean
 
-all: libdirq.a libdirq.so dqt libdirq.pc
+all: libdirq.a libdirq.so dqt
 
 dirq.o: dirq.c dirq.h $(XDEPS)
 dqt.o: dqt.c dirq.h
@@ -41,19 +41,12 @@ endif
 dqt: dqt.o libdirq.a
 	$(CC) -o $@ $^ $(LIBS)
 
-libdirq.pc: libdirq.pc.template
-	cp -f $^ $@
-	sed -i "s;prefix=;prefix=$(INSTALLROOT);g" $@
-	sed -i "s;libdir=;libdir=$(INSTALROOT)$(LIBDIR);g" $@
-	sed -i "s;includedir=;includedir=$(INSTALROOT)$(INCLUDEDIR);g" $@
-	sed -i "s;Version:;Version: $(VERSION);g" $@
-
 test: dqt
 	@tempdir=`mktemp -d -t c-dirq-XXXXX`; \
 	./dqt -d --count 1000 --path $$tempdir/new simple; \
 	rmdir $$tempdir
 
-install: libdirq.a libdirq.so libdirq.pc
+install: libdirq.a libdirq.so
 	install -d $(INSTALLROOT)$(INCLUDEDIR)
 	install -m 0644 dirq.h $(INSTALLROOT)$(INCLUDEDIR)
 	install -d $(INSTALLROOT)$(LIBDIR)
@@ -67,7 +60,7 @@ install: libdirq.a libdirq.so libdirq.pc
 	install -m 0644 libdirq.pc $(INSTALLROOT)$(LIBDIR)/pkgconfig
 
 clean:
-	rm -f libdirq.a libdirq.so dqt libdirq.pc *.o *~
+	rm -f libdirq.a libdirq.so dqt *.o *~
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile libdirq.pc

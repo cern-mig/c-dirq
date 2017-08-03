@@ -1,11 +1,11 @@
 prefix=
-libdir=
-includedir=
+libdir=@LIBDIR@
+includedir=@INCLUDEDIR@
                                                  
 Name: dirq
 URL: https://github.com/cern-mig/c-dirq
 Description: C implementation of the simple directory queue algorithm
-Version:
+Version: @VERSION@
 Libs: -L${libdir} -ldirq
 Cflags: -I${includedir}
 
