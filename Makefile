@@ -10,12 +10,13 @@
 # Copyright (C) CERN 2012-2017
 
 VERSION=$(shell cat VERSION)
+PKGTAG=v${VERSION}
 PKGDIR=libdirq-$(VERSION)
 TARBALL=$(PKGDIR).tar.gz
 PKGFILES=CHANGES DESIGN LICENSE README.md VERSION \
  Makefile configure doc src libdirq.spec
 
-.PHONY: all test install clean distclean sources
+.PHONY: all test install sources tag clean distclean
 
 all test install: src/Makefile
 	make -C src $@
@@ -34,6 +35,16 @@ $(TARBALL):
 	( cd $$tempdir; tar cvfz $(TARBALL) $(PKGDIR) ); \
 	mv -f $$tempdir/$(TARBALL) $(TARBALL); \
 	rm -fr $$tempdir
+
+tag:
+	@seen=`git tag -l | grep -Fx ${PKGTAG}`; \
+	if [ "x$$seen" = "x" ]; then \
+	    set -x; \
+	    git tag ${PKGTAG}; \
+	    git push --tags; \
+	else \
+	    echo "already tagged with ${PKGTAG}"; \
+	fi
 
 clean:
 	@make -C doc clean
