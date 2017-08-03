@@ -12,7 +12,7 @@
 VERSION=$(shell cat VERSION)
 PKGDIR=libdirq-$(VERSION)
 TARBALL=$(PKGDIR).tar.gz
-PKGFILES=CHANGES DESIGN LICENSE README VERSION \
+PKGFILES=CHANGES DESIGN LICENSE README.md VERSION \
  Makefile configure doc src libdirq.spec
 
 .PHONY: all test install clean distclean sources

@@ -68,7 +68,7 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root,-)
-%doc CHANGES DESIGN LICENSE README doc/dirq.html src/dqt.c
+%doc CHANGES DESIGN LICENSE README.md doc/dirq.html src/dqt.c
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
