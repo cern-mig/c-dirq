@@ -1,0 +1,6 @@
+src/Makefile
+src/libdirq.pc
+src/*.a
+src/*.o
+src/*.so
+src/dqt
