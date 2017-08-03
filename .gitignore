@@ -1,6 +1,10 @@
+doc/dirq.3
+doc/dirq.html
+doc/dirq.pod
 src/Makefile
 src/libdirq.pc
 src/*.a
 src/*.o
 src/*.so
 src/dqt
+libdirq-*.tar.gz
