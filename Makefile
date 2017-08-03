@@ -7,7 +7,7 @@
 #-##############################################################################
 
 # Author: Lionel Cons (http://cern.ch/lionel.cons)
-# Copyright (C) CERN 2012-2016
+# Copyright (C) CERN 2012-2017
 
 VERSION=$(shell cat VERSION)
 PKGDIR=libdirq-$(VERSION)
