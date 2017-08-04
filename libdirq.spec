@@ -43,7 +43,7 @@ using the %{name} library.
 
 %prep
 %setup -q
-./configure --includedir=%{_includedir} --libdir=%{_libdir} --mandir=%{_mandir}
+CFLAGS="${RPM_OPT_FLAGS}" ./configure --includedir=%{_includedir} --libdir=%{_libdir} --mandir=%{_mandir}
 
 %build
 make %{?_smp_mflags}
