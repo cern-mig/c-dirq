@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #+##############################################################################
 #                                                                              #
 # File: configure                                                              #
@@ -95,7 +95,13 @@ fi
 # substitutions
 #
 
-IFS=. read version_major version_minor <<<$version
+oldIFS=$IFS
+IFS=.
+set $version
+version_major=$1
+version_minor=$2
+IFS=$oldIFS
+
 subst=
 for name in cc cflags debug includedir libdir libs mandir system \
             version version_major version_minor; do
