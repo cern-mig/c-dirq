@@ -222,6 +222,16 @@ static void safe_get (const char *name)
 }
 
 /*
+ * info test
+ */
+
+static void test_info (void)
+{
+  debug(0, "using dirq version %d.%d (0x%02x)",
+        DIRQ_VERSION_MAJOR, DIRQ_VERSION_MINOR, DIRQ_VERSION_HEX);
+}
+
+/*
  * count test
  */
 
@@ -469,6 +479,7 @@ static void test_simple (void)
   } else {
     die("cannot use existing path for simple test: %s", OptPath);
   }
+  test_info();
   test_add();
   test_count();
   test_size();
@@ -560,7 +571,7 @@ int main(int argc, char *argv[])
       break;
     case 'l':
       printf("Available tests: %s\n",
-             "add count get iterate purge remove simple size");
+             "add count get info iterate purge remove simple size");
       exit(0);
       break;
     case 'p':
@@ -617,6 +628,8 @@ int main(int argc, char *argv[])
     test_count();
   } else if (strcmp(argv[optind], "get") == 0) {
     test_iterate(DO_GET);
+  } else if (strcmp(argv[optind], "info") == 0) {
+    test_info();
   } else if (strcmp(argv[optind], "iterate") == 0) {
     test_iterate(DO_ITERATE);
   } else if (strcmp(argv[optind], "purge") == 0) {
