@@ -13,15 +13,14 @@ CC=@CC@
 CFLAGS=@CFLAGS@
 XDEPS=$(wildcard dirq_*.[ch])
 LIBS=@LIBS@
+INSTALLROOT=
 INCLUDEDIR=@INCLUDEDIR@
 LIBDIR=@LIBDIR@
-MANDIR=@MANDIR@
-INSTALLROOT=
 VERSION=@VERSION@
 MAJOR=$(firstword $(subst ., ,$(VERSION)))
 SYSTEM=@SYSTEM@
 
-.PHONY: all test install clean distclean
+.PHONY: all test install clean
 
 all: libdirq.a libdirq.so dqt
 
@@ -54,13 +53,8 @@ install: libdirq.a libdirq.so
 	install -m 0755 libdirq.so $(INSTALLROOT)$(LIBDIR)/libdirq.so.$(VERSION)
 	ln -s libdirq.so.$(VERSION) $(INSTALLROOT)$(LIBDIR)/libdirq.so.$(MAJOR)
 	ln -s libdirq.so.$(MAJOR) $(INSTALLROOT)$(LIBDIR)/libdirq.so
-	install -d $(INSTALLROOT)$(MANDIR)/man3
-	install -m 0644 ../doc/dirq.3 $(INSTALLROOT)$(MANDIR)/man3
 	install -d $(INSTALLROOT)$(LIBDIR)/pkgconfig
 	install -m 0644 libdirq.pc $(INSTALLROOT)$(LIBDIR)/pkgconfig
 
 clean:
 	rm -f libdirq.a libdirq.so dqt *.o *~
-
-distclean: clean
-	rm -f Makefile libdirq.pc

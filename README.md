@@ -17,6 +17,21 @@ be written in different programming languages:
   * Perl: http://search.cpan.org/dist/Directory-Queue/
   * Python: https://github.com/cern-mig/python-dirq
 
+## Installation
+
+To see the available configuration options:
+```
+% ./configure --help
+```
+
+To configure, compile, test and install this library:
+```
+% ./configure
+% make
+% make test
+% make install
+```
+
 ## Documentation
 
 After installation, you can find documentation for this library with the man

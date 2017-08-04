@@ -49,9 +49,13 @@ _help() {
 $0 [OPTIONS]
   -d|--debug           enable code debugging [$debug]
   -h|--help            display this help and exit
-  --includedir=PATH    C header files [$includedir]
-  --libdir=PATH        object code libraries [$libdir]
-  --mandir=PATH        man documentation [$mandir]
+  --includedir=PATH    C header files location [$includedir]
+  --libdir=PATH        object code libraries location [$libdir]
+  --mandir=PATH        man pages location [$mandir]
+
+Environment variables:
+  CC                   compiler to use
+  CFLAGS               additional compiler flags
 EOF
     exit 0
 }
@@ -99,7 +103,7 @@ for name in cc cflags debug includedir libdir libs mandir system version; do
     subst="$subst -e 's|@$key@|$value|g'"
 done
 
-for path in src/Makefile src/libdirq.pc; do
+for path in Makefile doc/Makefile src/Makefile src/libdirq.pc; do
     echo "creating $path"
     rm -f $path
     eval sed $subst <$path.in >$path

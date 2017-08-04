@@ -1,8 +1,8 @@
 #+##############################################################################
 #                                                                              #
-# File: Makefile                                                               #
+# File: Makefile.in                                                            #
 #                                                                              #
-# Description: Makefile for the documentation                                  #
+# Description: skeleton Makefile for the documentation                         #
 #                                                                              #
 #-##############################################################################
 
@@ -11,9 +11,11 @@
 
 DIRQH=../src/dirq.h
 FILES=dirq.pod dirq.html dirq.3
-VERSION=$(shell cat ../VERSION)
+INSTALLROOT=
+MANDIR=@MANDIR@
+VERSION=@VERSION@
 
-.PHONY: all clean distclean
+.PHONY: all test install clean
 
 all: $(FILES)
 
@@ -27,8 +29,11 @@ dirq.html: dirq.pod
 dirq.3: dirq.pod
 	pod2man -c '' -n dirq -s 3 -r 'dirq $(VERSION)' $^ $@
 
+install: dirq.3
+	install -d $(INSTALLROOT)$(MANDIR)/man3
+	install -m 0644 dirq.3 $(INSTALLROOT)$(MANDIR)/man3
+
+test:
+
 clean:
 	rm -f pod2htm*.tmp *~
-
-distclean: clean
-	rm -f $(FILES)
