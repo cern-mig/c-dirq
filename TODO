@@ -1,8 +1,6 @@
 ToDo
  - implement umask (or remove it from all implementations!)
  - better document the reading and writing via callbacks
- - add a version string (+ API function to get it)?
- - put version in dirq.h (#define DIRQ_VERSION "") then configure to extract it?
  - use http://sftweb.cern.ch/coverity?
  - add missing API?
    * id(): return a unique identifier for the queue

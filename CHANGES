@@ -2,6 +2,7 @@ Revision history for C dirq:
 
 ???	???
 	* Added CC and CFLAGS support to the configure script.
+	* Added DIRQ_VERSION_* constants to dirq.h.
 
 0.4	Thu Nov 10 2016
 	* Added pkg-config support.

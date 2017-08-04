@@ -1,4 +1,7 @@
+Makefile
+doc/Makefile
 src/Makefile
+src/dirq.h
 src/libdirq.pc
 src/*.a
 src/*.o

@@ -19,8 +19,8 @@ includedir="/usr/include"
 libdir="/usr/lib"
 mandir="/usr/share/man"
 
-version=`cat VERSION`
-system=`uname -s`
+version=$(cat VERSION)
+system=$(uname -s)
 cflags="-pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align\
  -Wmissing-prototypes -Wmissing-declarations -fpic ${CFLAGS}"
 libs=
@@ -71,11 +71,11 @@ while [ $# -gt 0 ]; do
 	-d|--debug)     _setopt debug 1;;
 	-h|--help)      _help;;
 	--includedir)   _chkopt includedir ${1-UNSET}; shift;;
-	--includedir=*) _setopt includedir `echo $opt | sed 's/[-a-z]*=//'`;;
+	--includedir=*) _setopt includedir $(echo $opt | sed 's/[-a-z]*=//');;
 	--libdir)       _chkopt libdir ${1-UNSET}; shift;;
-	--libdir=*)     _setopt libdir `echo $opt | sed 's/[-a-z]*=//'`;;
+	--libdir=*)     _setopt libdir $(echo $opt | sed 's/[-a-z]*=//');;
 	--mandir)       _chkopt mandir ${1-UNSET}; shift;;
-	--mandir=*)     _setopt mandir `echo $opt | sed 's/[-a-z]*=//'`;;
+	--mandir=*)     _setopt mandir $(echo $opt | sed 's/[-a-z]*=//');;
 	*)              _die "unsupported option: $opt";;
     esac
 done
@@ -95,15 +95,17 @@ fi
 # substitutions
 #
 
+IFS=. read version_major version_minor <<<$version
 subst=
-for name in cc cflags debug includedir libdir libs mandir system version; do
+for name in cc cflags debug includedir libdir libs mandir system \
+            version version_major version_minor; do
     eval "value=\$$name"
     echo "using $name=$value"
-    key=`echo $name | tr '[a-z]' '[A-Z]'`
+    key=$(echo $name | tr '[a-z]' '[A-Z]')
     subst="$subst -e 's|@$key@|$value|g'"
 done
 
-for path in Makefile doc/Makefile src/Makefile src/libdirq.pc; do
+for path in Makefile doc/Makefile src/Makefile src/dirq.h src/libdirq.pc; do
     echo "creating $path"
     rm -f $path
     eval sed $subst <$path.in >$path
