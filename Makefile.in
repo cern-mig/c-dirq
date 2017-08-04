@@ -13,8 +13,6 @@ VERSION=@VERSION@
 PKGTAG=v$(VERSION)
 PKGDIR=libdirq-$(VERSION)
 TARBALL=$(PKGDIR).tar.gz
-PKGFILES=CHANGES DESIGN LICENSE README.md VERSION \
- Makefile.in Makefile configure doc src libdirq.spec
 
 .PHONY: all sources tag test install clean distclean
 
@@ -26,8 +24,8 @@ sources: $(TARBALL)
 $(TARBALL):
 	@tempdir=`mktemp -d -t c-dirq-XXXXX`; \
 	mkdir $$tempdir/$(PKGDIR); \
-	cp -a $(PKGFILES) $$tempdir/$(PKGDIR); \
-	( cd $$tempdir/$(PKGDIR); make distclean); \
+	cp -a * $$tempdir/$(PKGDIR); \
+	( cd $$tempdir/$(PKGDIR); make distclean ); \
 	( cd $$tempdir; tar cvfz $(TARBALL) $(PKGDIR) ); \
 	mv -f $$tempdir/$(TARBALL) $(TARBALL); \
 	rm -fr $$tempdir
