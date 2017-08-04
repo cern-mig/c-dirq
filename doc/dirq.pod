@@ -9,7 +9,7 @@ dirq - C implementation of the simple directory queue algorithm
    */
 
   #define DIRQ_VERSION_MAJOR 0
-  #define DIRQ_VERSION_MINOR 4
+  #define DIRQ_VERSION_MINOR 5
   #define DIRQ_VERSION_HEX ((DIRQ_VERSION_MAJOR << 8) | DIRQ_VERSION_MINOR)
 
   /*
