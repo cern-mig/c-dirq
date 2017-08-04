@@ -16,11 +16,10 @@ TARBALL=$(PKGDIR).tar.gz
 PKGFILES=CHANGES DESIGN LICENSE README.md VERSION \
  Makefile.in Makefile configure doc src libdirq.spec
 
-.PHONY: all test install sources tag clean distclean
+.PHONY: all sources tag test install clean distclean
 
-all test install:
-	make -C doc $@
-	make -C src $@
+all:
+	@make -C src all
 
 sources: $(TARBALL)
 
@@ -42,6 +41,13 @@ tag:
 	else \
 	    echo "already tagged with $(PKGTAG)"; \
 	fi
+
+test:
+	@make -C src test
+
+install:
+	@make -C doc install
+	@make -C src install
 
 clean:
 	@make -C doc clean

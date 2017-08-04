@@ -15,11 +15,11 @@ INSTALLROOT=
 MANDIR=@MANDIR@
 VERSION=@VERSION@
 
-.PHONY: all test install clean
+.PHONY: all install clean
 
 all: $(FILES)
 
-dirq.pod: dirq.p0d $(DIRQH)
+dirq.pod: dirq.p0d
 	@rm -f $@
 	./pp dirq.p0d $(DIRQH) > $@
 
@@ -33,7 +33,5 @@ install: dirq.3
 	install -d $(INSTALLROOT)$(MANDIR)/man3
 	install -m 0644 dirq.3 $(INSTALLROOT)$(MANDIR)/man3
 
-test:
-
 clean:
-	rm -f pod2htm*.tmp *~
+	rm -f *.tmp *~
