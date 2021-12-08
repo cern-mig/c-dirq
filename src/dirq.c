@@ -54,8 +54,8 @@
 
 #define TMP1BUF(_d)  (_d->buffer + _d->tmp1_offset)
 #define TMP2BUF(_d)  (_d->buffer + _d->tmp2_offset)
-#define TMP1NAME(_d) (_d->buffer + _d->tmp1_offset + _d->pathlen +  1)
-#define TMP2NAME(_d) (_d->buffer + _d->tmp2_offset + _d->pathlen +  1)
+#define TMP1NAME(_d) (_d->buffer + _d->tmp1_offset + _d->pathlen + 1)
+#define TMP2NAME(_d) (_d->buffer + _d->tmp2_offset + _d->pathlen + 1)
 
 /*
  * dirq_add(DIRQ, BUFFER, LENGTH): NAME success | NULL error

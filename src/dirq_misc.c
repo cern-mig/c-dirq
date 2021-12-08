@@ -117,7 +117,7 @@ static int set_insertion_directory (dirq_t dirq)
   if (result != 0)
     return(result);
   *(TMP1NAME(dirq) + DIR_NAME_LENGTH) = '/';
-  strncpy(TMP2NAME(dirq), TMP1NAME(dirq), DIR_NAME_LENGTH + 1);
+  memmove(TMP2NAME(dirq), TMP1NAME(dirq), DIR_NAME_LENGTH + 1);
   return(0);
 }
 
