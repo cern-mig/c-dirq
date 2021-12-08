@@ -1,6 +1,6 @@
 # dirq - C implementation of the simple directory queue algorithm
 
-[![Build Status](https://travis-ci.org/cern-mig/c-dirq.png?branch=master)](https://travis-ci.org/cern-mig/c-dirq)
+![Build Status](https://github.com/cern-mig/c-dirq/actions/workflows/test.yml/badge.svg)
 
 ## Description
 
@@ -51,4 +51,4 @@ Lionel Cons - http://cern.ch/lionel.cons
 
 ## Copyright
 
-Copyright (C) CERN 2012-2017
+Copyright (C) CERN 2012-2021
