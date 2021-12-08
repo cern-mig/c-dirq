@@ -1,7 +1,0 @@
-notifications:
-  email:
-    - mig-travis@cern.ch
-language: c
-compiler:
-  - gcc
-  - clang
