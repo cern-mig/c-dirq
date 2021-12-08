@@ -199,14 +199,14 @@ const char *dirq_next (dirq_t dirq)
 
   if (dirq->elts_index < dirq->elts_count) {
     assert(dirq->dirs_index > 0);
-    strncpy(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index-1), DIRS_SIZE);
+    memmove(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index-1), DIRS_SIZE);
     *(TMP1NAME(dirq) + DIRS_SIZE) = '/';
     strcpy(TMP1NAME(dirq) + DIRS_SIZE + 1, ELTBUF(dirq,dirq->elts_index));
     dirq->elts_index++;
     return(TMP1NAME(dirq));
   }
   while (dirq->dirs_index < dirq->dirs_count) {
-    strncpy(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
+    memmove(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
     *(TMP1NAME(dirq) + DIRS_SIZE) = '\0';
     result = _get_elts(dirq);
     if (result < 0)
@@ -235,7 +235,7 @@ int dirq_count (dirq_t dirq)
   if (result < 0)
     return(-1);
   while (dirq->dirs_index < dirq->dirs_count) {
-    strncpy(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
+    memmove(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
     *(TMP1NAME(dirq) + DIRS_SIZE) = '\0';
     result = _get_elts(dirq);
     if (result < 0)
@@ -311,9 +311,9 @@ int dirq_purge (dirq_t dirq)
   dirq->purge_maxlock = dirq->maxlock ? (now - dirq->maxlock) : 0;
   dirq->purge_maxtemp = dirq->maxtemp ? (now - dirq->maxtemp) : 0;
   while (dirq->dirs_index < dirq->dirs_count) {
-    strncpy(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
+    memmove(TMP1NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
     *(TMP1NAME(dirq) + DIRS_SIZE) = '\0';
-    strncpy(TMP2NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
+    memmove(TMP2NAME(dirq), DIRBUF(dirq,dirq->dirs_index), DIRS_SIZE);
     *(TMP2NAME(dirq) + DIRS_SIZE) = '/';
     dirq->elts_count = 0;
     result = _iterate(dirq, dirq->tmp1_offset, _purge_cb);
