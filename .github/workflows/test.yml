@@ -1,0 +1,17 @@
+name: Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [ 'clang-10', 'gcc-9' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up ${{ matrix.compiler }}
+        run: sudo apt-get install -y ${{ matrix.compiler }}
+      - name: Build and test
+        run: |
+          ./configure CC=${{ matrix.compiler }}
+          make test
