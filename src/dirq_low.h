@@ -6,7 +6,7 @@
 
 /*
  * Author: Lionel Cons (http://cern.ch/lionel.cons)
- * Copyright (C) CERN 2012-2021
+ * Copyright (C) CERN 2012-2024
  */
 
 /*
