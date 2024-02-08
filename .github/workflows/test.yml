@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        compiler: [ 'clang-10', 'gcc-9', 'gcc-10' ]
+        compiler: [ 'clang-12', 'clang-13', 'clang-14', 'gcc-12', 'gcc-13', 'gcc-14' ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up ${{ matrix.compiler }}
         run: sudo apt-get install -y ${{ matrix.compiler }}
       - name: Configure
