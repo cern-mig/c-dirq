@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        compiler: [ 'clang-12', 'clang-13', 'clang-14', 'gcc-12', 'gcc-13', 'gcc-14' ]
+        compiler: [ 'clang-12', 'clang-13', 'clang-14', 'gcc-11', 'gcc-12', 'gcc-13' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
