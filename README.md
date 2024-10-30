@@ -2,6 +2,9 @@
 
 ![Build Status](https://github.com/cern-mig/c-dirq/actions/workflows/test.yml/badge.svg)
 
+> [!WARNING]
+> This software is not maintained anymore.
+
 ## Description
 
 The goal of this library is to offer a "simple" queue system using the
